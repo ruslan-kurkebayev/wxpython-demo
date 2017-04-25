@@ -5,15 +5,17 @@
 """
 
 import wx
-import os.path
+import platform
 
 class MainWindow(wx.Frame):
     """
         Main window of the app.
     """
+    # ensure consistent encoding
+    wx.SetDefaultPyEncoding('utf-8')
     app_name = 'Демо'
 
-    def __init__(self, window_size=(200, 100)):
+    def __init__(self, window_size=(400, 200)):
         super(MainWindow, self).__init__(None, size=window_size)
         self.create_on_window_components()
         self.create_off_window_components()
@@ -39,7 +41,10 @@ class MainWindow(wx.Frame):
         """ Create window components, such as menu and status bar. """
         self.create_menu()
         self.CreateStatusBar()
-        self.set_title()
+        if platform.system() == 'Windows':
+            self.set_title('Палитра')
+        else:
+            self.set_title()
 
     def create_menu(self):
         """ Create menu of the app. """
@@ -114,8 +119,9 @@ class MainWindow(wx.Frame):
     def on_open_palette(self, event):
         """ Open palette window. """
         self.set_title('Палитра')
-        self.Show()
-
+        if platform.system() != 'Windows':
+            self.Show()
+        
     def on_choose_color(self, event):
         """ Handle 'choose' color button press. """
         dialog = wx.ColourDialog(self)
@@ -133,4 +139,6 @@ if __name__ == '__main__':
     # run the app if module is called directly
     app = wx.App()
     frame = MainWindow()
+    if platform.system() == 'Windows':
+        frame.Show()
     app.MainLoop()
